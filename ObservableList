@@ -1,0 +1,112 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+namespace lab_5
+{
+        public delegate void Print();
+    class Program
+    {
+     
+        static void Main(string[] args)
+        {
+            //  Printer print = new Printer();
+
+            //print.print = () => { Console.WriteLine( "wiadomość"); };
+            //  print.print();
+            Couter couter = new Couter();
+
+            couter.Added += (object sender, ChangedEventArgs e) => // <----------- handled event
+            {
+                Console.WriteLine("Added event occured: value=" + e.Value);
+            };
+              couter.Substracted += (object sender, ChangedEventArgs e) => // <----------- handled event
+            {
+                Console.WriteLine("Substact event occured: value=" + e.Value);
+            };
+
+            couter.Add(1);
+            couter.Add(1);
+            couter.Add(1);
+           
+            couter.Substract(1);
+            couter.Substract(1);
+            couter.Substract(1);
+        }
+    }
+    public class Couter
+    {
+        private int value;
+
+        public event EventHandler<ChangedEventArgs> Changed; // <------------------- event declaration
+        public event EventHandler<ChangedEventArgs> Added;
+        public event EventHandler<ChangedEventArgs> Substracted;
+        protected virtual void OnChanged(ChangedEventArgs e) // <------------------- wraps event (allows to raise the event)
+        {
+            EventHandler<ChangedEventArgs> handler = this.Changed;
+           
+        
+                if (handler != null)
+                handler(this, e);
+        }
+        protected virtual void OnAdded(ChangedEventArgs e) // <------------------- wraps event (allows to raise the event)
+        {
+            EventHandler<ChangedEventArgs> handler = this.Added;
+
+
+            if (handler != null)
+                handler(this, e);
+        }
+
+        protected virtual void Onsubstract(ChangedEventArgs e) // <------------------- wraps event (allows to raise the event)
+        {
+            EventHandler<ChangedEventArgs> handler = this.Substracted;
+
+
+            if (handler != null)
+                handler(this, e);
+        }
+
+        public void Add(int step)
+        {
+            this.value += step;
+
+            this.OnAdded(new ChangedEventArgs(this.value)); // <------------------- runs the event
+        }
+        public void Substract(int step)
+        {
+            this.value -= step;
+
+            this.Onsubstract(new ChangedEventArgs(this.value)); // <------------------- runs the event
+        }
+    }
+
+    public class ChangedEventArgs : EventArgs
+    {
+        public int Value { get; set; }
+
+        public ChangedEventArgs(int value)
+        {
+            this.Value = value;
+        }
+    }
+    class Printer
+    {
+        public Print print;
+        public void Print()
+        {
+            if (this.print != null) this.print();
+        }
+    }
+    class ObservableList1<T>
+    {
+        //public void Add (T item);
+        //public bool Get(T item);
+        //public void Set(int index, T item);
+        //public void RemoveAt (int index);
+        //public int Lenght{ get; }
+        //public T this[int index] { get { } set { } }
+        //public event ListChangedEventHandler<T> ItemAdded;
+        //public event ListChangedEventHandler<T> ItemRemoved;
+        //public event ListChangedEventHandler<T> ItemUpdated;
+    }
+}
